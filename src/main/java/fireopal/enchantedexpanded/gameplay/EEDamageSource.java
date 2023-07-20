@@ -8,7 +8,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
 public class EEDamageSource {
-    public static final RegistryKey<DamageType> BRUTALITY = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, new Identifier("brutality"));
+    // public static final RegistryKey<DamageType> BRUTALITY = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, new Identifier("brutality"));
 
-    private final DamageSource brutalityDamageSource = new DamageSource(this.registry.entryOf(key));
+    // private final DamageSource brutalityDamageSource = new DamageSource(this.registry.entryOf(key));
 }

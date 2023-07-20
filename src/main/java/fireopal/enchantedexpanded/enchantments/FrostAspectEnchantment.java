@@ -1,9 +1,8 @@
 package fireopal.enchantedexpanded.enchantments;
 
-import eu.pb4.polymer.core.api.utils.PolymerObject;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.enchantment.FireAspectEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -11,13 +10,9 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 
-public class FrostAspectEnchantment extends FireAspectEnchantment implements PolymerObject {
-    protected FrostAspectEnchantment(Rarity weight, EquipmentSlot[] slotTypes) {
-        super(weight, slotTypes);
-    }
-
-    protected FrostAspectEnchantment(Rarity weight, EquipmentSlot slotTypes) {
-        super(weight, slotTypes);
+public class FrostAspectEnchantment extends EEEnchantment {
+    protected FrostAspectEnchantment(String name, Rarity weight, EnchantmentTarget type, EquipmentSlot... slot) {
+        super(name, weight, type, slot);
     }
 
     @Override
@@ -27,21 +22,48 @@ public class FrostAspectEnchantment extends FireAspectEnchantment implements Pol
 
     public static int getFrozenTicks(int level) {
         return 150 + level * 6 * 40;
-    } 
+    }
 
-    public static void spawnFrozenParticles(Entity e, World world) {
-        if (world instanceof ServerWorld && e instanceof LivingEntity && ((LivingEntity) e).hurtTime == 0) {
-            ((ServerWorld) world).spawnParticles(
-                ParticleTypes.SNOWFLAKE, 
-                e.getX(), 
-                (e.getY() + e.getEyeY()) / 2, 
-                e.getZ(), 
-                10, 
-                1, 
-                1, 
-                1, 
-                0
-            );
-        }
+    @Override
+    public void onTargetDamaged(LivingEntity user, Entity target, int level) {
+        frostAspect(user, target, level);
+    }
+    
+    public static void frostAspect(LivingEntity user, Entity target, int level) {
+        if (level > 0) {
+            int frozenTicks = FrostAspectEnchantment.getFrozenTicks(level);
+
+            if (frozenTicks > target.getFrozenTicks()) target.setFrozenTicks(frozenTicks);
+            spawnFrozenParticles(target, user.getWorld());
+        } 
+
+    }
+
+    public static void spawnFrozenParticles(Entity target, World world) {
+        if (world instanceof ServerWorld) {
+                ((ServerWorld) world).spawnParticles(
+                    ParticleTypes.SNOWFLAKE, 
+                    target.getX(), 
+                    (target.getEyeY() + target.getY()) / 2.0, 
+                    target.getZ(), 
+                    5, 
+                    0.25, 
+                    (target.getEyeY() - target.getY()) / 2.0, 
+                    0.25, 
+                    0
+                );
+            }
+    }
+
+    public int getMinPower(int level) {
+        return 10 + 20 * (level - 1);
+    }
+
+    public int getMaxPower(int level) {
+        return super.getMinPower(level) + 50;
+    }
+
+    public int getMaxLevel() {
+        return 2;
     }
 }

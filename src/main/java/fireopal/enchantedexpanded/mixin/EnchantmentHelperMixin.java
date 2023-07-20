@@ -8,9 +8,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import fireopal.enchantedexpanded.EnchantedExpanded;
 import fireopal.enchantedexpanded.enchantments.AlluringEnchantment;
+import fireopal.enchantedexpanded.enchantments.EEEnchantment;
 import fireopal.enchantedexpanded.enchantments.EEEnchantments;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.entity.LivingEntity;
@@ -24,6 +25,13 @@ public class EnchantmentHelperMixin {
         cir.setReturnValue(
             cir.getReturnValue() - (AlluringEnchantment.getKnockbackFactor() * EnchantmentHelper.getEquipmentLevel(EEEnchantments.ALLURING, entity))
         );
+    }
+
+    @Inject(method = "getLevel(Lnet/minecraft/enchantment/Enchantment;Lnet/minecraft/item/ItemStack;)I", at = @At("HEAD"), cancellable = true)
+    private static void getLevel(Enchantment enchantment, ItemStack stack, CallbackInfoReturnable<Integer> cir) {
+        if (enchantment instanceof EEEnchantment && !((EEEnchantment) enchantment).getConfig().isEnabled()) {
+            cir.setReturnValue(0);
+        }
     }
 
     // @Redirect(

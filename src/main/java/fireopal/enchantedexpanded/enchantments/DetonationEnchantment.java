@@ -11,8 +11,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
 public class DetonationEnchantment extends EEEnchantment {
-    protected DetonationEnchantment(Rarity weight, EnchantmentTarget type, EquipmentSlot slotTypes) {
-        super(weight, type, new EquipmentSlot[]{slotTypes});
+    protected DetonationEnchantment(String name, Rarity weight, EnchantmentTarget type, EquipmentSlot... slot) {
+        super(name, weight, type, slot);
     }
 
     public static int getKnockbackFactor() {
@@ -32,21 +32,6 @@ public class DetonationEnchantment extends EEEnchantment {
     @Override
     public int getMaxLevel() {
         return 4;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
-    public boolean isAvailableForEnchantedBookOffer() {
-        return false;
-    }
-
-    @Override
-    public boolean isAvailableForRandomSelection() {
-        return false;
     }
 
     @Override

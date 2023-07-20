@@ -6,8 +6,8 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
 
 public class VelocityEnchantment extends EEEnchantment {
-    protected VelocityEnchantment(Rarity weight, EnchantmentTarget type, EquipmentSlot[] slotTypes) {
-        super(weight, type, slotTypes);
+    protected VelocityEnchantment(String name, Rarity weight, EnchantmentTarget type, EquipmentSlot... slot) {
+        super(name, weight, type, slot);
     }
     
     @Override
@@ -28,14 +28,5 @@ public class VelocityEnchantment extends EEEnchantment {
     @Override
     public boolean canAccept(Enchantment other) {
         return other != Enchantments.PIERCING && other != Enchantments.MULTISHOT && other != Enchantments.QUICK_CHARGE; 
-    }
-
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
-    public boolean isAvailableForEnchantedBookOffer() {
-        return false;
     }
 }

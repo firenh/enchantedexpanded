@@ -18,8 +18,8 @@ public class GrowthEnchantment extends EEEnchantment {
     );
 
     
-    protected GrowthEnchantment(Rarity weight, EquipmentSlot[] slotTypes) {
-        super(weight, EnchantmentTarget.ARMOR, slotTypes);
+    protected GrowthEnchantment(String name, Rarity weight, EnchantmentTarget type, EquipmentSlot... slot) {
+        super(name, weight, type, slot);
     }
     
     public int getMaxLevel() {
@@ -34,20 +34,6 @@ public class GrowthEnchantment extends EEEnchantment {
     @Override
     public int getMaxPower(int level) {
         return getMinPower(level + 1) + level * 2;
-    }
-
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
-    public boolean isAvailableForEnchantedBookOffer() {
-        return false;
-    }
-
-    @Override
-    public boolean isAvailableForRandomSelection() {
-        return false;
     }
 
     @Override

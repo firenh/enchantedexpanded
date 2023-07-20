@@ -1,5 +1,6 @@
 package fireopal.enchantedexpanded.enchantments;
 
+import fireopal.enchantedexpanded.EnchantedExpanded;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -12,12 +13,12 @@ import net.minecraft.world.World;
 
 public class AdrenalineEnchantment extends EEEnchantment {
     public static final int COOLDOWN_TICKS = 2 * 60 * 20;
-
-    protected AdrenalineEnchantment(Rarity weight, EnchantmentTarget type, EquipmentSlot... chest) {
-        super(weight, type, chest);
+    protected AdrenalineEnchantment(String name, Rarity weight, EnchantmentTarget type, EquipmentSlot... slot) {
+        super(name, weight, type, slot);
     }
 
     public static void doAdrenalineEnchantment(LivingEntity user, int level) {
+
         int bonus = level - 1;
         spawnParticles(user, user.getWorld());
         // EnchantedExpanded.LOGGER.info("excite: " + (user.getWorld().getTime() - ((LivingEntityAccessor) user).getLastDamageTime()));

@@ -2,11 +2,12 @@ package fireopal.enchantedexpanded.enchantments;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import org.apache.logging.log4j.util.TriConsumer;
+
+import fireopal.enchantedexpanded.EnchantedExpanded;
 import fireopal.enchantedexpanded.duck.DuckPlayerEntity;
-import fireopal.enchantedexpanded.gameplay.OnAttack;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
@@ -38,8 +39,8 @@ public class MagnitudeEnchantment extends EEEnchantment {
     private static final int COOLDOWN_MISS = 20;
     private static final int COOLDOWN_HIT = 60;
     
-    protected MagnitudeEnchantment(Rarity weight, EnchantmentTarget type, EquipmentSlot slotType) {
-        super(weight, type, new EquipmentSlot[]{slotType});
+    protected MagnitudeEnchantment(String name, Rarity weight, EnchantmentTarget type, EquipmentSlot... slot) {
+        super(name, weight, type, slot);
     }
 
     @Override
@@ -65,20 +66,6 @@ public class MagnitudeEnchantment extends EEEnchantment {
     @Override
     public float getAttackDamage(int level, EntityGroup group) {
         return (float) level / 2f;
-    }
-
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
-    public boolean isAvailableForEnchantedBookOffer() {
-        return false;
-    }
-
-    @Override
-    public boolean isAvailableForRandomSelection() {
-        return false;
     }
 
     public static void onUseMagnitude(LivingEntity entity, ItemStack stack) {
@@ -230,25 +217,21 @@ public class MagnitudeEnchantment extends EEEnchantment {
     }
 
     private static enum MagnitudeEffectType {
-        FIRE_ASPECT(Enchantments.FIRE_ASPECT, ParticleTypes.FLAME, (attacker, target) -> {
+        FIRE_ASPECT(Enchantments.FIRE_ASPECT, ParticleTypes.SMALL_FLAME, (attacker, target, level) -> {
             target.setOnFireFor(EnchantmentHelper.getFireAspect(attacker) * 4);
         }),
-        FROST_ASPECT(EEEnchantments.FROST_ASPECT, ParticleTypes.SNOWFLAKE, (attacker, target) -> {
-            OnAttack.frostAspect(attacker, target);
+        FROST_ASPECT(EEEnchantments.FROST_ASPECT, ParticleTypes.SNOWFLAKE, (attacker, target, level) -> {
+            FrostAspectEnchantment.frostAspect(attacker, target, level);
         }),
-        WITHERING(EEEnchantments.WITHERING, ParticleTypes.SMOKE, (attacker, target) -> {
-            OnAttack.withering(attacker, target);
+        WITHERING(EEEnchantments.WITHERING, ParticleTypes.SMOKE, (attacker, target, level) -> {
+            WitheringEnchantment.withering(attacker, target, level);
         });
 
         final Enchantment enchantment;
         final ParticleEffect particle;
-        final BiConsumer<LivingEntity, LivingEntity> func;
+        final TriConsumer<LivingEntity, LivingEntity, Integer> func;
 
         public ParticleEffect getParticle() {
-            if (this == MagnitudeEffectType.FIRE_ASPECT) {
-                return ParticleTypes.SMALL_FLAME;
-            }
-
             return particle;
         }
 
@@ -257,10 +240,10 @@ public class MagnitudeEnchantment extends EEEnchantment {
         }
 
         public void onAttack(LivingEntity attacker, LivingEntity target) {
-            func.accept(attacker, target);
+            func.accept(attacker, target, EnchantmentHelper.getLevel(this.getEnchantment(), attacker.getMainHandStack()));
         }
 
-        private <T extends ParticleEffect> MagnitudeEffectType(Enchantment enchantment, T particle, BiConsumer<LivingEntity, LivingEntity> func) {
+        private <T extends ParticleEffect> MagnitudeEffectType(Enchantment enchantment, T particle, TriConsumer<LivingEntity, LivingEntity, Integer> func) {
             this.enchantment = enchantment;
             this.particle = particle;
             this.func = func;
@@ -296,43 +279,4 @@ public class MagnitudeEnchantment extends EEEnchantment {
             0
         );
     }
-
-    // private static class BlockShapeTracker {
-    //     BlockPos blockPos;
-    //     List<Box> boxes;
-    //     boolean hasCollided = false;
-
-    //     public BlockShapeTracker(BlockPos blockPos, List<Box> boxes) {
-    //         this.blockPos = blockPos;
-    //         this.boxes = boxes;
-    //     }
-
-    //     public BlockShapeTracker(BlockPos blockPos, VoxelShape voxelShape) {
-    //         List<Box> boxes = new ArrayList<>();
-            
-    //         voxelShape.forEachBox((minX, minY, minZ, maxX, maxY, maxZ) -> {
-    //             boxes.add(new Box(minX, minY, minZ, maxX, maxY, maxZ));
-    //         });
-
-    //         this.blockPos = blockPos;
-    //         this.boxes = boxes;
-    //     }
-
-    //     public BlockShapeTracker(World world, BlockPos blockPos) {
-    //         this(blockPos, world.getBlockState(blockPos).getCollisionShape(world, blockPos));
-    //     }
-
-    //     private boolean collidesWith(World world, Vec3d pos) {
-    //         if (!(new BlockPos(pos).equals(blockPos))) {
-                
-    //         }
-
-    //         for (Box box : boxes) {
-    //         Box shiftedBox = box.offset(blockPos);
-            
-    //         if (shiftedBox.contains(pos)) {
-    //             return true;
-    //         }
-    //     }
-    // }
 }

@@ -1,6 +1,5 @@
 package fireopal.enchantedexpanded.enchantments;
 
-import fireopal.enchantedexpanded.EnchantedExpanded;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.enchantment.Enchantments;
@@ -10,8 +9,8 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 
 public class MagicProtectionEnchantment extends EEEnchantment {
-    protected MagicProtectionEnchantment(Rarity weight, EnchantmentTarget type, EquipmentSlot[] slotTypes) {
-        super(weight, type, slotTypes);
+    protected MagicProtectionEnchantment(String name, Rarity weight, EnchantmentTarget type, EquipmentSlot... slot) {
+        super(name, weight, type, slot);
     }
 
     @Override
@@ -37,11 +36,10 @@ public class MagicProtectionEnchantment extends EEEnchantment {
     @Override
     public int getProtectionAmount(int level, DamageSource source) {
         // EnchantedExpanded.LOGGER.info(source.getName());
-
         if (source.isOf(DamageTypes.MAGIC) || source.isOf(DamageTypes.INDIRECT_MAGIC)) {
             // EnchantedExpanded.LOGGER.info("level: " + level);
 
-            return 12 * level;
+            return 6 * level;
         }
         return 0;
     }

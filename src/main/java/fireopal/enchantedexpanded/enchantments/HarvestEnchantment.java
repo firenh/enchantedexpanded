@@ -6,8 +6,8 @@ import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 
 public class HarvestEnchantment extends EEEnchantment {
-    protected HarvestEnchantment(Rarity weight, EquipmentSlot slotTypes) {
-        super(weight, EnchantmentTarget.DIGGER, new EquipmentSlot[]{slotTypes});
+    protected HarvestEnchantment(String name, Rarity weight, EnchantmentTarget type, EquipmentSlot... slot) {
+        super(name, weight, type, slot);
     }
 
     public boolean isAcceptableItem(ItemStack stack) {

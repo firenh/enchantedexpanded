@@ -1,16 +1,22 @@
 package fireopal.enchantedexpanded.enchantments;
 
+import fireopal.enchantedexpanded.EnchantedExpanded;
 import net.minecraft.enchantment.DamageEnchantment;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.World;
 
 public class BrutalityEnchantment extends EEEnchantment {
-    protected BrutalityEnchantment(Rarity weight, EquipmentSlot slotTypes) {
-        super(weight, EnchantmentTarget.WEAPON, new EquipmentSlot[]{slotTypes});
+    protected BrutalityEnchantment(String name, Rarity weight, EnchantmentTarget type, EquipmentSlot... slot) {
+        super(name, weight, type, slot);
     }
 
     @Override
@@ -25,6 +31,28 @@ public class BrutalityEnchantment extends EEEnchantment {
     }
 
     @Override
+    public void onTargetDamaged(LivingEntity user, Entity target, int level) {
+        if (level > 0 && target instanceof LivingEntity) {
+            user.damage(user.getWorld().getDamageSources().magic(), level * 2f);
+            World world = user.getWorld();
+
+            if (world instanceof ServerWorld) {
+                ((ServerWorld) world).spawnParticles(
+                    ParticleTypes.DAMAGE_INDICATOR, 
+                    user.getX(), 
+                    user.getEyeY(), 
+                    user.getZ(), 
+                    level, 
+                    0, 
+                    0, 
+                    0, 
+                    0.5
+                );
+            }
+        }
+    }
+
+    @Override
     public int getMaxLevel() {
         return 5;
     }
@@ -36,7 +64,7 @@ public class BrutalityEnchantment extends EEEnchantment {
 
     @Override
     public float getAttackDamage(int level, EntityGroup group) {
-        return level * 2.25f;
+        return level * 2f;
     }
 
     @Override
